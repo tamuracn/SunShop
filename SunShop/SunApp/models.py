@@ -8,17 +8,6 @@ python manage.py makemigrations
 python manage.py migrate
 
 """
-class TodoItem(models.Model):
-    title = models.CharField(max_length=100)
-    completed = models.BooleanField(default=False)
-
-# class Project(models.Model):
-#     name = models.CharField(max_length=100)
-#     budget = models.DecimalField(max_digits=10, decimal_places=2)
-#     description = models.TextField(blank=True)
-
-#     def __str__(self):
-#         return self.name
 
 class PurchaseRequest(models.Model):
     STATUS_CHOICES = [
@@ -40,3 +29,8 @@ class PurchaseRequest(models.Model):
 
     def __str__(self):
         return self.item_name
+
+class TodoItem(models.Model):
+    title = models.CharField(max_length=100)
+    completed = models.BooleanField(default=False)
+

@@ -1,5 +1,8 @@
 {% extends 'base.html' %} {% block title %} Sun Shop Home Page {% endblock %}
 {% block content %}
-    <h1>Welcome to SunShop</h1>
+
+    <h1>Welcome, {{ user.first_name|default:user.username }}</h1>
     <p>This is the home page</p>
+
+
 {% endblock %}
