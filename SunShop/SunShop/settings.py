@@ -76,8 +76,12 @@ WSGI_APPLICATION = 'SunShop.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'sunshoppurchase',
+        'USER': 'root',
+        'PASSWORD': 'helloworld2023',
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
 }
 
