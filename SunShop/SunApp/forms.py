@@ -54,3 +54,14 @@ class AddRequestForm(forms.ModelForm):
     class Meta:
         model = PurchaseRequest
         fields = ('requested_by', 'project', 'item_name', 'vendor', 'quantity', 'price', 'purchase_link', 'notes')
+
+# # Create Add Received Form
+# class AddReceivedForm(forms.ModelForm):
+#     acepted_by = forms.ModelChoiceField(queryset=User.objects.all(), label='Requested By', widget=forms.Select(attrs={'placeholder': 'Username','class': 'form-control'}))
+#     item_name = forms.CharField(max_length=200, label='Item Name', widget=forms.TextInput(attrs={'class': 'form-control','placeholder': 'Item Name'}))
+#     packing_slip = forms.FileField(label='Packing Slip', widget=forms.FileInput(attrs={'class': 'form-control','placeholder': 'Packing Slip'}))
+#     notes = forms.CharField(label='Notes', widget=forms.Textarea(attrs={'class': 'form-control','placeholder': 'Notes'}))
+
+#     class Meta:
+#         model = PurchaseRequest
+#         fields = ('requested_by', 'project', 'item_name', 'vendor', 'quantity', 'price', 'purchase_link', 'notes')
