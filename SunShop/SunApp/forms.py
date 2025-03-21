@@ -4,6 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import PurchaseRequest
 
+
 class SignUpForm(UserCreationForm):
     first_name = forms.CharField(max_length=30, label='First Name', widget=forms.TextInput(attrs={'class': 'form-control','placeholder': 'First Name'}) )
     last_name = forms.CharField(max_length=30, label='Last Name', widget=forms.TextInput(attrs={'class': 'form-control','placeholder': 'Last Name'}))
@@ -39,29 +40,68 @@ class SignUpForm(UserCreationForm):
         self.fields['last_name'].widget.attrs['placeholder'] = 'Last Name'
         self.fields['last_name'].label = 'Last Name'
 
+class FirstNameModelChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
+        return obj.first_name
 
 # Create Add Request Form
 class AddRequestForm(forms.ModelForm):
-    requested_by = forms.ModelChoiceField(queryset=User.objects.all(), label='Requested By', widget=forms.Select(attrs={'placeholder': 'Username','class': 'form-control'}))
+    STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Ordered', 'Ordered'),
+        ('Received', 'Received'),
+        ('Cancelled', 'Cancelled'),
+    ]
+    requested_by = FirstNameModelChoiceField( queryset=User.objects.all(), label='Requested By', widget=forms.Select(attrs={ 'placeholder': 'Select requester','class': 'form-control'}))
     item_name = forms.CharField(max_length=200, label='Item Name', widget=forms.TextInput(attrs={'class': 'form-control','placeholder': 'Item Name'}))
     vendor = forms.CharField(max_length=200, label='Vendor', widget=forms.TextInput(attrs={'class': 'form-control','placeholder': 'Vendor'}))
     quantity = forms.IntegerField(label='Quantity', widget=forms.NumberInput(attrs={'class': 'form-control','placeholder': 'Quantity'}))
     price = forms.DecimalField(label='Price', widget=forms.NumberInput(attrs={'class': 'form-control','placeholder': 'Price'}))
     purchase_link = forms.URLField(label='Purchase Link', widget=forms.URLInput(attrs={'class': 'form-control','placeholder': 'Purchase Link'}))
     project = forms.CharField(max_length=200, label='Project', widget=forms.TextInput(attrs={'class': 'form-control','placeholder': 'Project'}))
-    notes = forms.CharField(label='Notes', widget=forms.Textarea(attrs={'class': 'form-control','placeholder': 'Notes'}))
+    status = forms.ChoiceField(choices=STATUS_CHOICES, label='Status', widget=forms.Select(attrs={'class': 'form-control', 'placeholder': 'Status'}))
+    worktag = forms.CharField(max_length=20, label='Worktag', required = False, widget=forms.TextInput(attrs={'class': 'form-control','placeholder': 'Worktag'}))
+    #purchasepath = forms.CharField(label='Purchase Path', required = False ,widget=forms.TextInput(attrs={'class': 'form-control','placeholder': 'Purchase Path ID'}))
+    notes = forms.CharField(label='Notes', required = False, widget=forms.Textarea(attrs={'class': 'form-control','placeholder': 'eg: Grant Numbers, tax exemption,  etc'}))
+
+    # Add order button that updates the order throught he request page
 
     class Meta:
         model = PurchaseRequest
-        fields = ('requested_by', 'project', 'item_name', 'vendor', 'quantity', 'price', 'purchase_link', 'notes')
+        fields = ('status','requested_by', 'project','item_name', 'vendor', 'quantity', 'price', 'worktag','purchase_link', 'notes')
 
 # # Create Add Received Form
-# class AddReceivedForm(forms.ModelForm):
-#     acepted_by = forms.ModelChoiceField(queryset=User.objects.all(), label='Requested By', widget=forms.Select(attrs={'placeholder': 'Username','class': 'form-control'}))
-#     item_name = forms.CharField(max_length=200, label='Item Name', widget=forms.TextInput(attrs={'class': 'form-control','placeholder': 'Item Name'}))
-#     packing_slip = forms.FileField(label='Packing Slip', widget=forms.FileInput(attrs={'class': 'form-control','placeholder': 'Packing Slip'}))
-#     notes = forms.CharField(label='Notes', widget=forms.Textarea(attrs={'class': 'form-control','placeholder': 'Notes'}))
+class AddReceivedForm(forms.ModelForm):
+    STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Ordered', 'Ordered'),
+        ('Received', 'Received'),
+        ('Cancelled', 'Cancelled'),
+    ]
+    #status = forms.ChoiceField(choices=STATUS_CHOICES, label='Status', widget=forms.Select(attrs={'class': 'form-control', 'placeholder': 'Status'}))
+    request = forms.ModelChoiceField(queryset=PurchaseRequest.objects.all(), label='Select Request', widget=forms.Select(attrs={'class': 'form-control', 'placeholder': 'Select Request'}))
+    received_by = FirstNameModelChoiceField( queryset=User.objects.all(), label='Requested By', widget=forms.Select(attrs={ 'placeholder': 'Select requester','class': 'form-control'}))
+    packing_slip = forms.FileField(label='Packing Slip', widget=forms.FileInput(attrs={'class': 'form-control','placeholder': 'Packing Slip'}))
+    #notes = forms.CharField(label='Notes', widget=forms.Textarea(attrs={'class': 'form-control','placeholder': 'Notes'}))
 
-#     class Meta:
-#         model = PurchaseRequest
-#         fields = ('requested_by', 'project', 'item_name', 'vendor', 'quantity', 'price', 'purchase_link', 'notes')
+    class Meta:
+        model = PurchaseRequest
+        fields = ('request','received_by', 'packing_slip')
+
+class OrderedForm(forms.ModelForm):
+    STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Ordered', 'Ordered'),
+        ('Received', 'Received'),
+        ('Cancelled', 'Cancelled'),
+    ]
+    #status = forms.ChoiceField(choices=STATUS_CHOICES, label='Status', widget=forms.Select(attrs={'class': 'form-control', 'placeholder': 'Status'}))
+    purchaser = FirstNameModelChoiceField( queryset=User.objects.all(), label='Requested By', widget=forms.Select(attrs={ 'placeholder': 'Select requester','class': 'form-control'}))
+    purchasepath = forms.CharField(label='Purchase Path', widget=forms.TextInput(attrs={'class': 'form-control','placeholder': 'Purchase Path ID'}))
+
+    class Meta:
+        model = PurchaseRequest
+        fields = ('purchaser', 'purchasepath')
+        widgets = {
+            'purchaser_notes': forms.Textarea(attrs={'rows': 3}),
+        }

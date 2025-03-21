@@ -11,7 +11,10 @@ urlpatterns = [
     path("request_record/<int:pk>/", views.request_record, name='request_record'),
     path("delete_request/<int:pk>/", views.delete_request, name='delete_request'),
     path("add_request/", views.add_request, name='add_request'),
+    path("add_recieved/", views.add_recieved, name='add_recieved'),
     path("update_request/<int:pk>/", views.update_request, name='update_request'),
+    path("order_request/<int:pk>/", views.order_request, name='order_request'),
+    path("all_purchase/", views.all_purchase_, name='all_purchase'),
 
 ]
 

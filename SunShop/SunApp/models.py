@@ -13,9 +13,10 @@ class TodoItem(models.Model):
 
 class PurchaseRequest(models.Model):
     STATUS_CHOICES = [
-        ('pending', 'Pending'),
-        ('ordered', 'Ordered'),
-        ('received', 'Received'),
+        ('Pending', 'Pending'),
+        ('Ordered', 'Ordered'),
+        ('Received', 'Received'),
+        ('Cancelled', 'Cancelled'),
     ]
     # Requesting
     date_requested = models.DateField(auto_now_add=True)
@@ -23,8 +24,9 @@ class PurchaseRequest(models.Model):
     item_name = models.CharField(max_length=200)
     vendor = models.CharField(max_length=200)
     quantity = models.IntegerField(default=0)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    price = models.DecimalField(max_digits=15, decimal_places=2)
     purchase_link = models.URLField(blank=True)
+    worktag = models.CharField(max_length=20, blank=True)
     project = models.CharField(max_length=200, blank=True)
     notes = models.TextField(blank=True)
 
